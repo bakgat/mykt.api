@@ -2,13 +2,13 @@ import * as mongoose from 'mongoose';
 import { IGroup, IStudentGroup } from '../groups/group';
 
 export interface IStudent extends mongoose.Document {
-    _id: string,
-    id: string,
-    first_name: string,
-    last_name: string,
-    school_id: string,
-    birthday: Date,
-    groups: Array<IStudentGroup>
+    _id: string;
+    id: string;
+    first_name: string;
+    last_name: string;
+    school_id: string;
+    birthday: Date;
+    groups: Array<IStudentGroup>;
 }
 
 

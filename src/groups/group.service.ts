@@ -1,4 +1,4 @@
-import * as mongoose from 'mongoose';
+
 import { Group, IGroup } from './group';
 import { GenericCrudService } from '../abstract/crud.service';
 

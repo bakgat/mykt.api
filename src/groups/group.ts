@@ -1,5 +1,5 @@
 import * as mongoose from 'mongoose';
-
+import { staffType } from '../abstract/person.types';
 
 export interface IGroup extends mongoose.Document {
     _id: string;
@@ -13,6 +13,14 @@ export interface IStudentGroup {
     name: string;
     start: Date;
     end: Date;
+}
+export interface IStaffGroup {
+    _id: mongoose.Types.ObjectId;
+    group_id: string;
+    name: string;
+    start: Date;
+    end: Date;
+    type: staffType;
 }
 
 

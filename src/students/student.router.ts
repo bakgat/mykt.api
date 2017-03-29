@@ -1,4 +1,4 @@
-import { Router, Request, Response, NextFunction } from 'express';
+import {  Request, Response, NextFunction } from 'express';
 import { studentService } from './student.service';
 import { IStudent } from './student';
 import { IGroup } from '../groups/group';
@@ -6,22 +6,22 @@ import { CrudRouter } from '../abstract/crud.router';
 
 export class StudentRouter extends CrudRouter<IStudent> {
     public getAll(req: Request, res: Response, next: NextFunction) {
-        return super.resolveAll(studentService.getAll(), res);
+        return super.resolveAll(studentService.getAll(), res, next);
     }
 
     public getOne(req: Request, res: Response, next: NextFunction) {
-        return super.resolveOne(studentService.getOne(req.params.id), res);
+        return super.resolveOne(studentService.getOne(req.params.id), res, next);
     }
 
     public create(req: Request, res: Response, next: NextFunction) {
-        return super.resolveCreate(studentService.add(req.body), res, req);
+        return super.resolveCreate(studentService.add(req.body), res, req, next);
     }
 
     public update(req: Request, res: Response, next: NextFunction) {
-        return super.resolveUpdate(studentService.update(req.params.id, req.body), res);
+        return super.resolveUpdate(studentService.update(req.params.id, req.body), res, next);
     }
     public remove(req: Request, res: Response, next: NextFunction) {
-        return super.resolveRemove(studentService.remove(req.params.id), res);
+        return super.resolveRemove(studentService.remove(req.params.id), res, next);
     }
 
     public getGroups(req: Request, res: Response, next: NextFunction) {

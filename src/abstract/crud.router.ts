@@ -1,5 +1,6 @@
 import * as mongoose from 'mongoose';
 import { Router, Request, Response, NextFunction } from 'express';
+import { JSONError } from './jsonerror';
 
 export abstract class CrudRouter<T extends mongoose.Document> {
     public router: Router;
@@ -15,30 +16,52 @@ export abstract class CrudRouter<T extends mongoose.Document> {
     public abstract update(req: Request, res: Response, next: NextFunction);
     public abstract remove(req: Request, res: Response, next: NextFunction);
 
-    protected resolveAll(data: Promise<Array<T>>, res: Response) {
+    protected resolveAll(data: Promise<Array<T>>, res: Response, next: NextFunction) {
         return data.then((result: Array<T>) => {
             res.status(200).json(result);
+        }).catch(err => {
+            next(new JSONError(err));
         });
     }
-    protected resolveOne(data: Promise<T>, res: Response) {
+    protected resolveOne(data: Promise<T>, res: Response, next: NextFunction) {
         return data.then((result: T) => {
-            res.status(200).json(result);
+            if (result) {
+                res.status(200).json(result);
+            } else {
+                next(new JSONError(null, 404));
+            }
+        }).catch(err => {
+            next(new JSONError(err));
         });
     }
-    protected resolveCreate(data: Promise<T>, res: Response, req: Request) {
+    protected resolveCreate(data: Promise<T>, res: Response, req: Request, next: NextFunction) {
         return data.then((result: T) => {
             res.setHeader('Location', `${req.baseUrl}/${result._id}`);
             res.status(201).json(result);
+        }).catch(err => {
+            next(new JSONError(err));
         });
     }
-    protected resolveUpdate(data: Promise<T>, res: Response) {
+    protected resolveUpdate(data: Promise<T>, res: Response, next: NextFunction) {
         return data.then((result: T) => {
-            res.status(200).json(result);
+            if (result) {
+                res.status(200).json(result);
+            } else {
+                next(new JSONError(null, 404));
+            }
+        }).catch(err => {
+            next(new JSONError(err));
         });
     }
-    protected resolveRemove(data: Promise<T>, res: Response) {
-        return data.then(() => {
-            res.status(204).send();
+    protected resolveRemove(data: Promise<T>, res: Response, next: NextFunction) {
+        return data.then(result => {
+            if (result) {
+                res.status(204).send();
+            } else {
+                next(new JSONError(null, 404));
+            }
+        }).catch(err => {
+            next(new JSONError(err));
         });
     }
 
