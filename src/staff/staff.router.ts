@@ -22,6 +22,16 @@ export class StaffRouter extends CrudRouter<IStaff> {
     public remove(req: Request, res: Response, next: NextFunction) {
         return super.resolveRemove(staffService.remove(req.params.id), res, next);
     }
+
+    public getRoles(req: Request, res: Response, next: NextFunction) {
+
+    }
+    public addToRole(req: Request, res: Response, next: NextFunction) {
+
+    }
+    public removeFromRole(req: Request, res: Response, next: NextFunction) {
+        
+    }
 }
 
 export const staffRoutes = new StaffRouter();

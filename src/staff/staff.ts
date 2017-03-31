@@ -1,6 +1,8 @@
 import * as mongoose from 'mongoose';
+import * as bcrypt from 'bcrypt';
 import { IGroup, IStaffGroup } from '../groups/group';
 import { gender } from '../shared/person.types';
+import { IGooglePassport } from '../shared/google.passport';
 
 export interface IStaff extends mongoose.Document {
     _id: string;
@@ -8,6 +10,8 @@ export interface IStaff extends mongoose.Document {
     last_name: string;
     username: string;
     gender: gender;
+    password: string;
+    google: IGooglePassport
     /*birthday: Date;
     groups: Array<IStaffGroup>;
     roles: Array<String>;*/
@@ -20,6 +24,8 @@ export const StaffSchema = new mongoose.Schema({
     username: { type: String, required: true },
     gender: { type: String, required: true },
     birthday: { type: Date, required: false },
+    google: { type: Object, required: false },
+    password: { type: String, required: false },
     groups: [{
         group_id: { type: mongoose.Schema.Types.String, ref: "Group" },
         name: { type: String, required: true },
