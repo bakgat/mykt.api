@@ -2,7 +2,7 @@ import {  Request, Response, NextFunction } from 'express';
 import { studentService } from './student.service';
 import { IStudent } from './student';
 import { IGroup } from '../groups/group';
-import { CrudRouter } from '../abstract/crud.router';
+import { CrudRouter } from '../shared/crud.router';
 
 export class StudentRouter extends CrudRouter<IStudent> {
     public getAll(req: Request, res: Response, next: NextFunction) {

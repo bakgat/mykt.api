@@ -1,5 +1,5 @@
 import { Staff, IStaff } from './staff';
-import { GenericCrudService } from '../abstract/crud.service';
+import { GenericCrudService } from '../shared/crud.service';
 
 export class StaffService extends GenericCrudService<IStaff> {
     constructor() {

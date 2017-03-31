@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { staffService } from './staff.service';
 import { IStaff, Staff } from './staff';
-import { CrudRouter } from '../abstract/crud.router';
+import { CrudRouter } from '../shared/crud.router';
 
 export class StaffRouter extends CrudRouter<IStaff> {
     public getAll(req: Request, res: Response, next: NextFunction) {

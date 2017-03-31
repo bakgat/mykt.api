@@ -8,7 +8,8 @@ import * as bluebird from 'bluebird';
 import { studentRoutes } from './students/student.router';
 import { groupRoutes } from './groups/group.router';
 import { staffRoutes } from './staff/staff.router';
-import { JSONError } from './abstract/jsonerror';
+import { roleRoutes } from './roles/role.router';
+import { JSONError } from './shared/jsonerror';
 
 class App {
     public express: express.Application;
@@ -45,6 +46,7 @@ class App {
         this.express.use('/v1/students', studentRoutes.router);
         this.express.use('/v1/groups', groupRoutes.router);
         this.express.use('/v1/staff', staffRoutes.router);
+        this.express.use('/v1/roles', roleRoutes.router);
     }
 
     private errorHandler(err, req, res, next) {

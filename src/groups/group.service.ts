@@ -1,6 +1,6 @@
 
 import { Group, IGroup } from './group';
-import { GenericCrudService } from '../abstract/crud.service';
+import { GenericCrudService } from '../shared/crud.service';
 
 export class GroupService extends GenericCrudService<IGroup> {
     constructor() {

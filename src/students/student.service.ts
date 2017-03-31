@@ -1,7 +1,7 @@
 import * as mongoose from 'mongoose';
 import { Student, IStudent } from './student';
 import { Group, IStudentGroup } from '../groups/group';
-import { GenericCrudService } from '../abstract/crud.service';
+import { GenericCrudService } from '../shared/crud.service';
 
 export class StudentService extends GenericCrudService<IStudent> {
     constructor() {

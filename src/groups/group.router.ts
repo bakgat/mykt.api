@@ -1,7 +1,7 @@
 import { Router, Request, Response, NextFunction } from 'express';
 import { groupService } from './group.service';
 import {  IGroup } from './group';
-import { CrudRouter } from '../abstract/crud.router';
+import { CrudRouter } from '../shared/crud.router';
 
 export class GroupRouter extends CrudRouter<IGroup> {
     public getAll(req: Request, res: Response, next: NextFunction) {

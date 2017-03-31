@@ -1,5 +1,5 @@
 import * as mongoose from 'mongoose';
-import { staffType } from '../abstract/person.types';
+import { staffType } from '../shared/person.types';
 
 export interface IGroup extends mongoose.Document {
     _id: string;

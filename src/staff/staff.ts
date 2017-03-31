@@ -1,6 +1,6 @@
 import * as mongoose from 'mongoose';
 import { IGroup, IStaffGroup } from '../groups/group';
-import { gender } from '../abstract/person.types';
+import { gender } from '../shared/person.types';
 
 export interface IStaff extends mongoose.Document {
     _id: string;
