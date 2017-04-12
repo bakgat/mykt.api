@@ -1,6 +1,7 @@
 import * as mongoose from 'mongoose';
 import { Staff, IStaff } from './staff';
-import {  IRole } from '../roles/role';
+import { IRole } from '../roles/role';
+import { roleService } from '../roles/role.service';
 import { GenericCrudService } from '../shared/crud.service';
 
 export class StaffService extends GenericCrudService<IStaff> {
@@ -10,7 +11,12 @@ export class StaffService extends GenericCrudService<IStaff> {
         this._select = '-groups';
     }
 
-    getRoles(id: string): Promise<IRole> {
+    findByUsername(username: string): Promise<IStaff> {
+        return Staff.findOne({username: username})
+            .exec();
+    }
+
+    getRoles(id: string): Promise<Array<IRole>> {
         return Staff.aggregate([
             { $match: { _id: mongoose.Types.ObjectId(id) } },
             { $unwind: '$roles' },
@@ -21,6 +27,28 @@ export class StaffService extends GenericCrudService<IStaff> {
                 }
             }
         ]).exec();
+    }
+
+    addToRole(id: string, role: string): Promise<IRole> {
+        let promise = new Promise<IRole>((resolve, reject) => {
+            roleService.find(role)
+                .then(r => {
+                    this.getOne(id)
+                        .then(staff => {
+                            staff.roles.push(r.name);
+                            staff.save()
+                                .then(result => { resolve(r); })
+                                .catch(err => { reject(err); });
+                        }).catch(err => { reject(err); });
+                }).catch(err => { reject(err); });
+        });
+        return promise;
+    }
+
+    removeRole(id: string, role: string): Promise<IStaff> {
+        return Staff.findByIdAndUpdate(id,
+            { $pull: { roles: role } })
+            .exec();
     }
 }
 

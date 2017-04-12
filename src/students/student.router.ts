@@ -3,6 +3,7 @@ import { studentService } from './student.service';
 import { IStudent } from './student';
 import { IGroup } from '../groups/group';
 import { CrudRouter } from '../shared/crud.router';
+import { JSONError } from '../shared/jsonerror';
 
 export class StudentRouter extends CrudRouter<IStudent> {
     public getAll(req: Request, res: Response, next: NextFunction) {
@@ -28,6 +29,8 @@ export class StudentRouter extends CrudRouter<IStudent> {
         studentService.getGroups(req.params.id)
             .then(result => {
                 res.status(200).json(result);
+            }).catch(err => {
+                next(new JSONError(err));
             });
     }
     public addToGroup(req: Request, res: Response, next: NextFunction) {

@@ -6,6 +6,10 @@ export class RoleService extends GenericCrudService<IRole> {
         super();
         this._model = Role;
     }
+
+    find(name: string) {
+        return Role.findOne({name: name}).exec();
+    }
 }
 
 export const roleService = new RoleService();

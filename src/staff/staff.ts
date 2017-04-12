@@ -1,6 +1,7 @@
 import * as mongoose from 'mongoose';
 import * as bcrypt from 'bcrypt';
 import { IGroup, IStaffGroup } from '../groups/group';
+import { IRole } from '../roles/role';
 import { gender } from '../shared/person.types';
 import { IGooglePassport } from '../shared/google.passport';
 
@@ -11,10 +12,13 @@ export interface IStaff extends mongoose.Document {
     username: string;
     gender: gender;
     password: string;
-    google: IGooglePassport
+    google: IGooglePassport,
+    roles: Array<string>,
+    validPassword,
+    generateHash: string
     /*birthday: Date;
     groups: Array<IStaffGroup>;
-    roles: Array<String>;*/
+    ;*/
 }
 
 export const StaffSchema = new mongoose.Schema({
@@ -36,6 +40,14 @@ export const StaffSchema = new mongoose.Schema({
     roles: [{ type: String }]
 },
 { collection: 'staff' });
+
+
+StaffSchema.methods.generateHash = function(password) {
+    return bcrypt.hashSync(password, bcrypt.genSaltSync(8));
+};
+StaffSchema.methods.validPassword = function(password) {
+    return bcrypt.compareSync(password, this.local.password);
+};
 
 var _model = mongoose.model<IStaff>('staff', StaffSchema);
 export const Staff = _model;

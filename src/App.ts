@@ -34,6 +34,8 @@ class App {
         this.express.use(this.errorHandler);
 
         //passport
+        require('./shared/passport.strategies').setupStrategies(passport);
+        
         this.express.use(session({ secret: 'iloveulrikejurreenjaan', resave: true, saveUninitialized: true }));
         this.express.use(passport.initialize());
         this.express.use(passport.session());
