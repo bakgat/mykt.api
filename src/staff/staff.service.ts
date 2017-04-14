@@ -15,6 +15,11 @@ export class StaffService extends GenericCrudService<IStaff> {
         return Staff.findOne({username: username})
             .exec();
     }
+    findUserByUsername(username: string): Promise<IStaff> {
+        this._select = '';
+        return Staff.findOne({username: username})
+            .exec();
+    }
 
     getRoles(id: string): Promise<Array<IRole>> {
         return Staff.aggregate([

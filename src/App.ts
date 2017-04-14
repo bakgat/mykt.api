@@ -7,12 +7,13 @@ import * as bluebird from 'bluebird';
 import * as session from 'express-session';
 import * as passport from 'passport';
 
+import { authRoutes } from './auth/auth.router';
 import { studentRoutes } from './students/student.router';
 import { groupRoutes } from './groups/group.router';
 import { staffRoutes } from './staff/staff.router';
 import { roleRoutes } from './roles/role.router';
 import { JSONError } from './shared/jsonerror';
-
+import { validateRequest } from './shared/validate.request';
 
 class App {
     public express: express.Application;
@@ -34,11 +35,12 @@ class App {
         this.express.use(this.errorHandler);
 
         //passport
-        require('./shared/passport.strategies').setupStrategies(passport);
-        
+        /*require('./shared/passport.strategies').setupStrategies(passport);
+
         this.express.use(session({ secret: 'iloveulrikejurreenjaan', resave: true, saveUninitialized: true }));
         this.express.use(passport.initialize());
-        this.express.use(passport.session());
+        this.express.use(passport.session());*/
+        //this.express.all('/v2/*', validateRequest);
     }
 
     private mongo() {
@@ -56,6 +58,7 @@ class App {
     }
 
     private routes(): void {
+        this.express.use('/login', authRoutes.router);
         this.express.use('/v1/students', studentRoutes.router);
         this.express.use('/v1/groups', groupRoutes.router);
         this.express.use('/v1/staff', staffRoutes.router);
