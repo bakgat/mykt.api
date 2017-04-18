@@ -10,6 +10,7 @@ export function validateRequest(req: Request, res: Response, next: NextFunction)
 
     // We skip the token outh for [OPTIONS] requests.
     //if(req.method == 'OPTIONS') next();
+    
     let token = (req.body && req.body.access_token) || (req.query && req.query.access_token) || req.headers['x-access-token'];
     let key = (req.body && req.body.x_key) || (req.query && req.query.x_key) || req.headers['x-key'];
 

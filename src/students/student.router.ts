@@ -5,6 +5,8 @@ import { IGroup } from '../groups/group';
 import { CrudRouter } from '../shared/crud.router';
 import { JSONError } from '../shared/jsonerror';
 
+import { guard } from '../auth/index';
+
 export class StudentRouter extends CrudRouter<IStudent> {
     public getAll(req: Request, res: Response, next: NextFunction) {
         return super.resolveAll(studentService.getAll(), res, next);
@@ -55,7 +57,8 @@ export class StudentRouter extends CrudRouter<IStudent> {
     }
 
     init() {
-        super.init();
+        super.init('student');
+
         this.router.get('/:id/groups', this.getGroups);
         this.router.post('/:id/groups', this.addToGroup);
         this.router.put('/:id/groups/:groupId', this.updateGroup);

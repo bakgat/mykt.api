@@ -1,6 +1,6 @@
 import * as mongoose from 'mongoose';
 import { Staff, IStaff } from './staff';
-import { IRole } from '../roles/role';
+import { IRole, Role } from '../roles/role';
 import { roleService } from '../roles/role.service';
 import { GenericCrudService } from '../shared/crud.service';
 
@@ -12,13 +12,37 @@ export class StaffService extends GenericCrudService<IStaff> {
     }
 
     findByUsername(username: string): Promise<IStaff> {
-        return Staff.findOne({username: username})
+        return Staff.findOne({ username: username })
             .exec();
     }
     findUserByUsername(username: string): Promise<IStaff> {
         this._select = '';
-        return Staff.findOne({username: username})
+        return Staff.findOne({ username: username })
             .exec();
+    }
+
+    findPermissionsForUser(username: string): Promise<Array<String>> {
+        var permissions: Array<String> = [];
+        let promise = new Promise<Array<String>>((resolve, reject) => {
+            Staff.findOne({ username: username })
+                .then(user => {
+                    Role.aggregate(
+                        { $match: { name: { $in: user.roles } } },
+                        { $unwind: "$permissions" },
+                        { $group: { _id: null, perms: { $addToSet: "$permissions" } } },
+                        { $project: { _id: 0, permissions: '$perms' } }
+                    ).exec()
+                        .then(result => {
+                            if (result.length == 1) {
+                                resolve(result[0].permissions);
+                            } else {
+                                resolve(null);
+                            }
+                        })
+                        .catch(err => { reject(err); });
+                }).catch(err => { reject(err); });
+        });
+        return promise;
     }
 
     getRoles(id: string): Promise<Array<IRole>> {

@@ -1,5 +1,6 @@
 import * as http from 'http';
 import * as debug from 'debug';
+import * as pretty from 'pretty-error';
 
 import App from './app';
 
@@ -7,6 +8,9 @@ debug('ts-express:server');
 
 const port = normalizePort(process.env.PORT || 3000);
 App.set('port', port);
+
+let pe = new pretty();
+pe.start();
 
 const server = http.createServer(App);
 server.listen(port);
@@ -24,6 +28,7 @@ function onError(error: any): void {
     if(error.syscall !== 'listen') throw error;
 
     let bind = (typeof port === 'string') ? 'Pipe ' + port : 'Port ' + port;
+
     switch (error.code) {
         case 'EACCES':
             console.error(`${bind} requires elevated privileges`);

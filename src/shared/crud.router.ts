@@ -2,6 +2,9 @@ import * as mongoose from 'mongoose';
 import { Router, Request, Response, NextFunction } from 'express';
 import { JSONError } from './jsonerror';
 
+
+import { guard } from '../auth/index';
+
 export abstract class CrudRouter<T extends mongoose.Document> {
     public router: Router;
 
@@ -18,7 +21,7 @@ export abstract class CrudRouter<T extends mongoose.Document> {
 
     protected resolveAll(data: Promise<Array<T>>, res: Response, next: NextFunction) {
         return data.then((result: Array<T>) => {
-            res.status(200).json(result);
+            return res.status(200).json(result);
         }).catch(err => {
             next(new JSONError(err));
         });
@@ -28,7 +31,7 @@ export abstract class CrudRouter<T extends mongoose.Document> {
             if (result) {
                 res.status(200).json(result);
             } else {
-                next(new JSONError(null, 404));
+                next(new JSONError(404));
             }
         }).catch(err => {
             next(new JSONError(err));
@@ -47,7 +50,7 @@ export abstract class CrudRouter<T extends mongoose.Document> {
             if (result) {
                 res.status(200).json(result);
             } else {
-                next(new JSONError(null, 404));
+                next(new JSONError(404));
             }
         }).catch(err => {
             next(new JSONError(err));
@@ -58,14 +61,22 @@ export abstract class CrudRouter<T extends mongoose.Document> {
             if (result) {
                 res.status(204).send();
             } else {
-                next(new JSONError(null, 404));
+                next(new JSONError(404));
             }
         }).catch(err => {
             next(new JSONError(err));
         });
     }
 
-    init() {
+    init(guardBase?: string) {
+        if (guardBase) {
+            //SET AUTHORIZATION HERE PER ROUTE FIRST
+            this.router.get('/', guard(`${guardBase}:list`));
+            this.router.get('/:id', guard(`${guardBase}:get`));
+            this.router.post('/', guard(`${guardBase}:add`));
+            this.router.put('/:id', guard(`${guardBase}:update`));
+            this.router.delete('/:id', guard(`${guardBase}:delete`));
+        }
         this.router.get('/', this.getAll);
         this.router.get('/:id', this.getOne);
         this.router.post('/', this.create);
