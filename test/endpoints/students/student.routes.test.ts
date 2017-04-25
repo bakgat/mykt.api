@@ -332,6 +332,7 @@ describe(`PUT v1/students/${studentId}/groups/${studentGroupId}`, () => {
     });
     afterEach(done => {
         if (original) {
+            delete original._id;
             Student.findOneAndUpdate({ 'groups._id': studentGroupId },
                 { $set: { 'groups.$': original } })
                 .then(() => {

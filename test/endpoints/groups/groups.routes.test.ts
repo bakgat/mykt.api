@@ -84,12 +84,12 @@ describe('PUT v1/groups/58d6e2e63e17d80fc4c5f411', () => {
     beforeEach(done => {
         Group.findById('58d6e2e63e17d80fc4c5f411')
             .then(group => {
-                delete group._id;
                 original = group;
                 done();
             })
     });
     afterEach(done => {
+        delete original._id;
         Group.findByIdAndUpdate('58d6e2e63e17d80fc4c5f411', { $set: original })
             .then(() => {
                 done();
