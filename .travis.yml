@@ -4,8 +4,10 @@ env:
 addons:
   apt:
     sources:
+    - mongodb-3.4-precise
     - ubuntu-toolchain-r-test
     packages:
+    - mongodb-org-server
     - g++-4.8
 language: node_js
 node_js: 
