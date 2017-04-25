@@ -61,7 +61,6 @@ export class KivaService extends GenericCrudService<kiva.IKivaFile> {
                             resolve(res.victim_interview);
                         })
                         .catch(err => reject(err));
-
                 }).catch(err => {
                     reject(err);
                 });
