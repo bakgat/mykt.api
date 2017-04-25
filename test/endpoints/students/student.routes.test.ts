@@ -22,14 +22,14 @@ let user = {
 };
 
 var token = '';
-function _getToken(done): Promise<String> {
+function _getToken(done): Promise<any> {
     return auth.login(user.username, user.password)
         .then(u => {
             token = u.token;
             done();
         });
 }
-function _getFaultyToken(done): Promise<String> {
+function _getFaultyToken(done): Promise<any> {
     return auth.login('sophie.haelemeersch@klimtoren.be', 'password')
         .then(u => {
             token = u.token;

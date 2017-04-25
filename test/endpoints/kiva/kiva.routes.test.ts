@@ -7,7 +7,7 @@ import * as async from 'async';
 
 import app from '../../../src/app';
 import * as kiva from '../../../src/kiva/kiva.file';
-import { collections } from '../../seed/students.seed';
+import { collections } from '../../seed/db.seed';
 
 chai.use(chaiHttp).use(chaiDatetime);
 const expect = chai.expect;
