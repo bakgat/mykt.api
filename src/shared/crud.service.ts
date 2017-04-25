@@ -30,5 +30,4 @@ export abstract class GenericCrudService<T extends mongoose.Document> implements
     remove(id: any): Promise<T> {
         return this._model.findByIdAndRemove(id).exec();
     }
-
 }
