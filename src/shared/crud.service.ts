@@ -23,6 +23,7 @@ export abstract class GenericCrudService<T extends mongoose.Document> implements
         return obj.save();
     }
     update(id: any, data: T): Promise<T> {
+        delete data._id; //prevent exception Mod on _id not allowed
         return this._model.findOneAndUpdate({ _id: id }, data, { new: true })
             .exec();
     }
