@@ -59,7 +59,7 @@ export function run() {
             var i = 0;
             async.each(names, (name, cb) => {
                 if (mongoose.connection.collection(name)) {
-                    mongoose.connection.collection(name).drop()
+                    mongoose.connection.db.dropCollection(name)
                         .then(() => {
                             mongoose.connection.collection(name).insert(collections[name], () => {
                                 if (++i === names.length) {
