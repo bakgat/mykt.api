@@ -59,16 +59,18 @@ export function run() {
             var i = 0;
             async.each(names, (name, cb) => {
                 if (mongoose.connection.collection(name)) {
-                    mongoose.connection.db.dropCollection(name)
-                        .then(() => {
-                            mongoose.connection.collection(name).insert(collections[name], () => {
+                    var collection = mongoose.connection.collections[name];
+                    collection.drop(err => {
+                        if (err && err.message != 'ns not found') cb(err);
+                        mongoose.connection.collection(name).insert(collections[name], () => {
                                 if (++i === names.length) {
                                     mongoose.connection.close();
                                     console.log('Done and closed connection');
                                     cb();
                                 }
                             });
-                        });
+                    });
+                    
                 } else {
                     mongoose.connection.collection(name).insert(collections[name], () => {
                         if (++i === names.length) {
