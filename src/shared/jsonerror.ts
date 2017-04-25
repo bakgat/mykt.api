@@ -4,7 +4,7 @@ export class JSONError extends Error {
     errors: Array<any>;
     constructor(error?: any, status?: Number) {
         super();
-       
+
         if (Number(error) !== NaN && !error.name) {
             status = error;
             error = null;
@@ -15,17 +15,20 @@ export class JSONError extends Error {
                 this.errors = error.errors ? error.errors : [error];
             }
             switch (status) {
-                case 400: 
+                case 400:
                     this.message = 'Bad request';
                     break;
                 case 401:
                     this.message = 'Invalid credentials';
                     break;
-                case 403: 
+                case 403:
                     this.message = 'Forbidden';
                     break;
                 case 404:
                     this.message = 'Uh oh! I still haven\'t found what you\'re looking for.';
+                    break;
+                case 409:
+                    this.message = 'Conflict. This resource already exists. Use PUT instead.';
                     break;
                 case 500:
                     this.message = 'Uh oh! I did something wrong';

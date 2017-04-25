@@ -12,6 +12,7 @@ import { studentRoutes } from './students/student.router';
 import { groupRoutes } from './groups/group.router';
 import { staffRoutes } from './staff/staff.router';
 import { roleRoutes } from './roles/role.router';
+import { kivaRoutes } from './kiva/kiva.router';
 import { JSONError } from './shared/jsonerror';
 import { validateRequest } from './shared/validate.request';
 
@@ -57,6 +58,7 @@ class App {
         this.express.use('/v1/groups', groupRoutes.router);
         this.express.use('/v1/staff', staffRoutes.router);
         this.express.use('/v1/roles', roleRoutes.router);
+        this.express.use('/v1/kiva', kivaRoutes.router);
     }
 
     private errorHandler(err, req, res, next) {

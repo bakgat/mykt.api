@@ -5,12 +5,13 @@
   "main": "index.js",
   "scripts": {
     "start": "gulp && node dist/index.js",
-    "test": "mocha --reporter spec --compilers ts:ts-node/register 'test/**/*.test.ts'"
+    "test": "ts-node test/seed/db.seed.ts && mocha --reporter spec --compilers ts:ts-node/register 'test/**/*.test.ts'"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@types/async": "^2.0.40",
     "@types/bcrypt": "^1.0.0",
     "@types/bluebird": "^3.5.2",
     "@types/body-parser": "^1.16.1",
@@ -41,6 +42,7 @@
     "typescript": "^2.2.1"
   },
   "dependencies": {
+    "async": "^2.3.0",
     "bcrypt": "^1.0.2",
     "bluebird": "^3.5.0",
     "body-parser": "^1.17.1",
