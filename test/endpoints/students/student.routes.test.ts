@@ -178,6 +178,7 @@ describe('PUT v1/students/58da34163e17d80fc4c5f416', () => {
     beforeEach(done => {
         Student.findById('58da34163e17d80fc4c5f416')
             .then(student => {
+                delete student._id;
                 original = student;
                 _getToken(done);
             });

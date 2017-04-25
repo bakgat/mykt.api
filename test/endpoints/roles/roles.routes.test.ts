@@ -86,6 +86,7 @@ describe(`PUT v1/roles/${roleId}`, () => {
     beforeEach(done => {
         Role.findById(roleId)
             .then(role => {
+                delete role._id;
                 original = role;
                 done();
             });
