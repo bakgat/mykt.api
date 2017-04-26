@@ -13,6 +13,8 @@ chai.use(chaiHttp).use(chaiDatetime);
 const expect = chai.expect;
 
 let fileId = '58fbb18b71ba420bb9f241d2';
+let faultyFileId = '60da67d410cb3b7a18e11716';
+
 let newFile = {
     date: new Date(),
     victim: {
@@ -28,8 +30,8 @@ let newFile = {
     bullies: [{ _id: "58d528003e17d80fc4c5f410", display_name: "Rebekka Buyse", group: "Lambik" }],
     announcer: { type: "parent", display_name: "Armand Van Iseghem" }
 };
+
 describe(`GET v1/kiva/${fileId}`, () => {
-    
     it('responds with a single json object', () => {
         return chai.request(app).get(`/v1/kiva/${fileId}`)
             .then(res => {
@@ -157,5 +159,12 @@ describe(`POST v1/kiva/:id/victim`, () => {
 
             });
 
+    });
+    it('should return 404 when kivaFile is not found', () => {
+        return chai.request(app).post(`/v1/kiva/${faultyFileId}/victim`)
+            .send(newVictimInterview)
+            .catch(err => {
+                expect(err).to.have.status(404);
+            })
     });
 });

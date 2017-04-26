@@ -62,17 +62,9 @@ export class KivaService extends GenericCrudService<kiva.IKivaFile> {
                         })
                         .catch(err => reject(err));
                 }).catch(err => {
-                    reject(err);
+                    reject(404);
                 });
-            var file =
-                kiva.KivaFile.findByIdAndUpdate(id, {
-                    victim_interview: data
-                }, { new: true })
-                    .then(result => {
-                        resolve(result.victim_interview);
-                    }).catch(err => {
-                        reject(err);
-                    });
+            
         });
         return promise;
     }
