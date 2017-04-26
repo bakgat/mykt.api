@@ -13,6 +13,7 @@ lib-cov
 # Coverage directory used by tools like istanbul
 coverage
 coverage_js
+.nyc_output
 
 # ignore documentation
 documentation
