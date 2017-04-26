@@ -276,12 +276,6 @@ describe('GET v1/students/58da34163e17d80fc4c5f416/groups', () => {
                 expect(new Date(Lambik.end)).to.equalDate(new Date('2016-06-30'));
             });
     });
-    it('should return 404 when students id not found', () => {
-        return chai.request(app).get(`/v1/students/${faultyId}/groups`)
-            .catch(res => {
-                expect(res).to.have.status(404);
-            });
-    });
 });
 
 describe('POST v1/students/58da34163e17d80fc4c5f416/groups', () => {
