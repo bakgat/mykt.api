@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "gulp && node dist/index.js",
-    "test": "nyc ts-node test/seed/db.seed.ts && mocha --reporter spec --compilers ts:ts-node/register 'test/**/*.test.ts'",
+    "test": "ts-node test/seed/db.seed.ts && nyc mocha",
     "cover": "nyc report --reporter=text-lcov | coveralls"
   },
   "keywords": [],
@@ -50,6 +50,7 @@
     "mocha": "^3.2.0",
     "nyc": "^10.2.0",
     "pretty-error": "^2.1.0",
+    "source-map-support": "^0.4.14",
     "ts-node": "^3.0.2",
     "typescript": "^2.2.1"
   },
@@ -83,9 +84,9 @@
       "ts-node/register"
     ],
     "reporter": [
-      "lcov",
       "text-lcov"
     ],
-    "all": true
+    "sourceMap": true,
+    "instrument": true
   }
 }
