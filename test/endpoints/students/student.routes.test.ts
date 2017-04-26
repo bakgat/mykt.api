@@ -29,6 +29,7 @@ function _getToken(done): Promise<any> {
             done();
         });
 }
+
 function _getFaultyToken(done): Promise<any> {
     return auth.login('sophie.haelemeersch@klimtoren.be', 'password')
         .then(u => {
