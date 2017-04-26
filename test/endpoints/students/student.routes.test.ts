@@ -15,6 +15,7 @@ const expect = chai.expect;
 
 let studentGroupId = '58da4c423e17d80fc4c5f42e';
 let studentId = '58da34163e17d80fc4c5f416'
+let faultyId = '60da67d410cb3b7a18e11716';
 
 let user = {
     username: 'frauke.taecke@klimtoren.be',
@@ -120,7 +121,7 @@ describe('GET v1/students/:id', () => {
             });
     });
     it('responds with 404 when not found', () => {
-        return chai.request(app).get('/v1/students/60da67d410cb3b7a18e11716')
+        return chai.request(app).get(`/v1/students/${faultyId}`)
             .set('x-access-token', token)
             .catch(res => {
                 expect(res).to.have.status(404);
@@ -273,6 +274,12 @@ describe('GET v1/students/58da34163e17d80fc4c5f416/groups', () => {
                 expect(Lambik).to.exist;
                 expect(new Date(Lambik.start)).to.equalDate(new Date('2015-09-01'));
                 expect(new Date(Lambik.end)).to.equalDate(new Date('2016-06-30'));
+            });
+    });
+    it('should return 404 when students id not found', () => {
+        return chai.request(app).get(`/v1/students/${faultyId}/groups`)
+            .catch(res => {
+                expect(res).to.have.status(404);
             });
     });
 });
