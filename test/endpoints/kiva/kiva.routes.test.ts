@@ -30,6 +30,21 @@ let newFile = {
     bullies: [{ _id: "58d528003e17d80fc4c5f410", display_name: "Rebekka Buyse", group: "Lambik" }],
     announcer: { type: "parent", display_name: "Armand Van Iseghem" }
 };
+let newVictimInterview = {
+    victim: {
+        _id: '58da34163e17d80fc4c5f416',
+        display_name: "Karl Van Iseghem",
+        group: "Kuifje"
+    },
+    date: new Date(),
+    bully_ways: ['verbaal agressief', 'grensoverschrijdend gedrag'],
+    estimated_times: '2x per week',
+    last_bully_date: new Date(),
+    bully_timespan: 'voorbije 6 maanden',
+    bullies: [{ _id: "58d528003e17d80fc4c5f410", display_name: "Rebekka Buyse", group: "Lambik" }],
+    supporters: [{ _id: "58d528003e17d80fc4c5f410", display_name: "Rebekka Buyse", group: "Lambik" }],
+    description: 'Nog een verslag over wat er gebeurde door het slachtoffer verteld.'
+};
 
 describe(`GET v1/kiva/${fileId}`, () => {
     it('responds with a single json object', () => {
@@ -76,6 +91,7 @@ describe('POST v1/kiva', () => {
     });
 });
 
+
 describe(`POST v1/kiva/:id/victim`, () => {
     let id = '';
     beforeEach(done => {
@@ -89,22 +105,6 @@ describe(`POST v1/kiva/:id/victim`, () => {
         kiva.KivaFile.find({ 'first_entry.summary': 'New added' }).remove()
             .exec().then(() => { done(); });
     });
-
-    let newVictimInterview = {
-        victim: {
-            _id: '58da34163e17d80fc4c5f416',
-            display_name: "Karl Van Iseghem",
-            group: "Kuifje"
-        },
-        date: new Date(),
-        bully_ways: ['verbaal agressief', 'grensoverschrijdend gedrag'],
-        estimated_times: '2x per week',
-        last_bully_date: new Date(),
-        bully_timespan: 'voorbije 6 maanden',
-        bullies: [{ _id: "58d528003e17d80fc4c5f410", display_name: "Rebekka Buyse", group: "Lambik" }],
-        supporters: [{ _id: "58d528003e17d80fc4c5f410", display_name: "Rebekka Buyse", group: "Lambik" }],
-        description: 'Nog een verslag over wat er gebeurde door het slachtoffer verteld.'
-    }
 
     it('should return a victim file when added', () => {
         return chai.request(app).post(`/v1/kiva/${id}/victim`)
@@ -129,21 +129,6 @@ describe(`POST v1/kiva/:id/victim`, () => {
             });
     });
     it('should return 409 when try to add new victim interview, if one already exists', () => {
-        let newVictimInterview = {
-            victim: {
-                _id: '58da34163e17d80fc4c5f416',
-                display_name: "Karl Van Iseghem",
-                group: "Kuifje"
-            },
-            date: new Date(),
-            bully_ways: ['verbaal agressief', 'grensoverschrijdend gedrag'],
-            estimated_times: '2x per week',
-            last_bully_date: new Date(),
-            bully_timespan: 'voorbije 6 maanden',
-            bullies: [{ _id: "58d528003e17d80fc4c5f410", display_name: "Rebekka Buyse", group: "Lambik" }],
-            supporters: [{ _id: "58d528003e17d80fc4c5f410", display_name: "Rebekka Buyse", group: "Lambik" }],
-            description: 'Nog een verslag over wat er gebeurde door het slachtoffer verteld.'
-        }
         return kiva.KivaFile.findOne({ 'first_entry.summary': 'New added' })
             .then((file: kiva.IKivaFile) => {
                 return file.update({ victim_interview: newVictimInterview })
@@ -167,4 +152,36 @@ describe(`POST v1/kiva/:id/victim`, () => {
                 expect(err).to.have.status(404);
             })
     });
+});
+
+describe(`PUT v1/kiva/${fileId}/victim`, () => {
+    let id = '';
+    beforeEach(done => {
+        kiva.KivaFile.create({ first_entry: newFile, victim_interview: newVictimInterview })
+            .then(result => {
+                id = result._id;
+                done();
+            });
+    });
+    afterEach(done => {
+        kiva.KivaFile.find({ 'first_entry.summary': 'New added' }).remove()
+            .exec().then(() => { done(); });
+    });
+
+    it('should update an existing interview', () => {
+        var updatedInterview = Object.assign({}, newVictimInterview);
+        updatedInterview.bully_timespan = 'updated result';
+
+        return chai.request(app).put(`/v1/kiva/${fileId}/victim`)
+            .send(updatedInterview)
+            .then(res => {
+                expect(res).to.have.status(200);
+                expect(res.body).to.be.an('object');
+                let fields = Object.keys(updatedInterview);
+                delete res.body._id; // _id field is not available in this test
+                expect(res.body).to.have.all.keys(fields);
+                expect(res.body.victim.display_name).to.equal(updatedInterview.victim.display_name);
+            });
+    });
+
 });

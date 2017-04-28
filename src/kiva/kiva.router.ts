@@ -62,8 +62,12 @@ export class KivaRouter {
             });
     }
 
+    updateFile(req: Request, res: Response, next: NextFunction) {
+        return null;
+    }
+
     createVictimInterview(req: Request, res: Response, next: NextFunction) {
-        
+
         return kivaService.addVictimInterview(req.params.id, req.body)
             .then((result: IKivaVictimInterview) => {
                 res.setHeader('Location', `${req.baseUrl}/${req.params.id}/victim`);
@@ -72,13 +76,24 @@ export class KivaRouter {
                 next(new JSONError(err));
             });
     }
+    updateVictimInterview(req: Request, res: Response, next: NextFunction) {
+        return kivaService.updateVictimInterview(req.params.id, req.body)
+            .then((result: IKivaVictimInterview) => {
+                res.status(200).json(result);
+            }).catch(err => {
+                next(new JSONError(err));
+            })
+    }
 
     init() {
         //SET AUTHORIZATION HERE PER ROUTER FIRST
         this.router.get('/:id', this.getOne);
 
         this.router.post('/', this.createFile);
+        this.router.put('/', this.updateFile);
+
         this.router.post('/:id/victim', this.createVictimInterview);
+        this.router.put('/:id/victim', this.updateVictimInterview);
     }
 }
 

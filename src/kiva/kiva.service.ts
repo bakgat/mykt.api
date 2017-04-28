@@ -64,7 +64,7 @@ export class KivaService extends GenericCrudService<kiva.IKivaFile> {
                 }).catch(err => {
                     reject(404);
                 });
-            
+
         });
         return promise;
     }
@@ -82,11 +82,17 @@ export class KivaService extends GenericCrudService<kiva.IKivaFile> {
         return null;
     }
 
-    updateFile(id: any, data: kiva.IKivaFirstEntry): Promise<kiva.IKivaFirstEntry> {
-        return null;
+    updateFile(id: any, data: kiva.IKivaFirstEntry): Promise<kiva.IKivaFile> {
+        return kiva.KivaFile.findByIdAndUpdate(id, { first_entry: data }, { new: true }).exec();
     }
-    updateVictimInterview(id: any, vid: any, data: kiva.IKivaVictimInterview): Promise<kiva.IKivaVictimInterview> {
-        return null;
+    updateVictimInterview(id: any, data: kiva.IKivaVictimInterview): Promise<kiva.IKivaVictimInterview> {
+        let promise = new Promise<kiva.IKivaVictimInterview>((resolve, reject) => {
+            kiva.KivaFile.findOneAndUpdate({ _id: id }, { $set: { victim_interview: data } }, { new: true })
+                .then(res => {
+                    resolve(res.victim_interview);
+                }).catch(err => reject(err));
+        });
+        return promise;
     }
     updateAction(id: any, aid: any, data: kiva.IKivaAction): Promise<kiva.IKivaAction> {
         return null;
