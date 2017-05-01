@@ -89,8 +89,13 @@ export class KivaService extends GenericCrudService<kiva.IKivaFile> {
         let promise = new Promise<kiva.IKivaVictimInterview>((resolve, reject) => {
             kiva.KivaFile.findOneAndUpdate({ _id: id }, { $set: { victim_interview: data } }, { new: true })
                 .then(res => {
+                    if(!res) {
+                        reject(404);
+                    }
                     resolve(res.victim_interview);
-                }).catch(err => reject(err));
+                }).catch(err => {
+                    reject(err)
+                });
         });
         return promise;
     }

@@ -184,4 +184,15 @@ describe(`PUT v1/kiva/${fileId}/victim`, () => {
             });
     });
 
+    it('should return 404 when try to update a victiminterview in an non-existing kivafile', () => {
+        var updatedInterview = Object.assign({}, newVictimInterview);
+        updatedInterview.bully_timespan = 'updated result';
+
+        return chai.request(app).put(`/v1/kiva/${faultyFileId}/victim`)
+            .send(updatedInterview)
+            .catch(res => {
+                expect(res).to.have.status(404);
+            });
+    })
+
 });
