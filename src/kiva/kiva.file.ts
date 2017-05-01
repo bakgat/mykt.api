@@ -38,7 +38,7 @@ export interface IKivaAgreement extends mongoose.Types.Subdocument {
     agreement: String
 }
 export interface IKivaAction extends mongoose.Types.Subdocument {
-    _id: String,
+    _id: string,
     type: String, // enum(mini-no-blame, no-blame, recover-contract, thermometer)
     no_blame: {
         date: Date,
@@ -114,7 +114,6 @@ export const KivaAgreementSchema = new mongoose.Schema({
     agreement: { type: String, required: false },
 });
 export const KivaActionSchema = new mongoose.Schema({
-    _id: { type: String, required: true },
     type: { type: String, required: false },
     no_blame: {
         date: { type: Date, required: false },

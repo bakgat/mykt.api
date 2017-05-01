@@ -32,7 +32,8 @@ import { kivaService } from './kiva.service';
 import {
     IKivaFile,
     IKivaFirstEntry,
-    IKivaVictimInterview
+    IKivaVictimInterview,
+    IKivaAction
 } from './kiva.file';
 
 export class KivaRouter {
@@ -85,6 +86,24 @@ export class KivaRouter {
             })
     }
 
+    addAction(req: Request, res: Response, next: NextFunction) {
+        return kivaService.addAction(req.params.id, req.body)
+            .then((result: IKivaAction) => {
+                res.setHeader('Location', `${req.baseUrl}/${req.params.id}/action/${result._id}`);
+                res.status(201).json(result);
+            }).catch(err => {
+                next(new JSONError(err));
+            });
+    }
+    updateAction(req: Request, res: Response, next: NextFunction) {
+        return kivaService.updateAction(req.params.id, req.params.aid, req.body)
+            .then((result: IKivaAction) => {
+                res.status(200).json(result);
+            }).catch(err=> {
+                next(new JSONError(err));
+            });
+    }
+
     init() {
         //SET AUTHORIZATION HERE PER ROUTER FIRST
         this.router.get('/:id', this.getOne);
@@ -94,6 +113,9 @@ export class KivaRouter {
 
         this.router.post('/:id/victim', this.createVictimInterview);
         this.router.put('/:id/victim', this.updateVictimInterview);
+
+        this.router.post('/:id/action', this.addAction);
+        this.router.put('/:id/action/:aid', this.updateAction);
     }
 }
 

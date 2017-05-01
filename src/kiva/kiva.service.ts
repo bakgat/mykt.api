@@ -47,18 +47,19 @@ export class KivaService extends GenericCrudService<kiva.IKivaFile> {
         return file.save();
     }
     addVictimInterview(id: string, data: kiva.IKivaVictimInterview): Promise<kiva.IKivaVictimInterview> {
-        let promise = new Promise<kiva.IKivaVictimInterview>((resolve, reject) => {
+        //only one interview possible
+        //so add = update ($set ...)
+        return this.updateVictimInterview(id, data);
+    }
+    addAction(id: string, data: kiva.IKivaAction): Promise<kiva.IKivaAction> {
+        let promise = new Promise<kiva.IKivaAction>((resolve, reject) => {
             kiva.KivaFile.findById(id)
                 .then(file => {
-                    if (file.victim_interview && file.victim_interview._id) {
-                        //if already exists, reject
-                        reject(409); //let JSONError handle this 409 status code
-                    }
-
-                    file.victim_interview = data;
+                    file.actions.push(data);
                     file.save()
                         .then((res: kiva.IKivaFile) => {
-                            resolve(res.victim_interview);
+                            let action = res.actions[res.actions.length - 1];
+                            resolve(action);
                         })
                         .catch(err => reject(err));
                 }).catch(err => {
@@ -67,9 +68,6 @@ export class KivaService extends GenericCrudService<kiva.IKivaFile> {
 
         });
         return promise;
-    }
-    addAction(data: kiva.IKivaAction): Promise<kiva.IKivaAction> {
-        return null;
     }
     addFollowup(data: kiva.IKivaFollowUp): Promise<kiva.IKivaFollowUp> {
         return null;
@@ -89,7 +87,7 @@ export class KivaService extends GenericCrudService<kiva.IKivaFile> {
         let promise = new Promise<kiva.IKivaVictimInterview>((resolve, reject) => {
             kiva.KivaFile.findOneAndUpdate({ _id: id }, { $set: { victim_interview: data } }, { new: true })
                 .then(res => {
-                    if(!res) {
+                    if (!res) {
                         reject(404);
                     }
                     resolve(res.victim_interview);
@@ -100,7 +98,19 @@ export class KivaService extends GenericCrudService<kiva.IKivaFile> {
         return promise;
     }
     updateAction(id: any, aid: any, data: kiva.IKivaAction): Promise<kiva.IKivaAction> {
-        return null;
+        let promise = new Promise<kiva.IKivaAction>((resolve, reject) => {
+            kiva.KivaFile.findOneAndUpdate({ _id: id, 'actions._id': aid },
+                { $set: { 'actions.$': data } }, { new: true })
+                .then(res => {
+                    if (!res) {
+                        reject(404);
+                    }
+                    resolve(res.actions.find(a => { return a._id = aid }));
+                }).catch(err => {
+                    reject(err);
+                });
+        });
+        return promise;
     }
     updateFollowup(id: any, fid: any, data: kiva.IKivaFollowUp): Promise<kiva.IKivaFollowUp> {
         return null;
