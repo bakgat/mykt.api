@@ -291,8 +291,8 @@ describe(`PUT v1/kiva/${fileId}/action/:aid`, () => {
     });
 
     it('should update an existing action', () => {
-        var updatedAction = Object.assign({_id: aid}, newAction);
-         updatedAction.no_blame.description = 'Koele bedoening';
+        var updatedAction = Object.assign({ _id: aid }, newAction);
+        updatedAction.no_blame.description = 'Koele bedoening';
 
         return chai.request(app).put(`/v1/kiva/${id}/action/${aid}`)
             .send(updatedAction)
@@ -304,7 +304,8 @@ describe(`PUT v1/kiva/${fileId}/action/:aid`, () => {
                     'type',
                     'no_blame',
                     'recovery_contract'
-                ]);expect(res.body.no_blame.description).to.equal(updatedAction.no_blame.description);
+                ]);
+                expect(res.body.no_blame.description).to.equal(updatedAction.no_blame.description);
             })
     });
 });
