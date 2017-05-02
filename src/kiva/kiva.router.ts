@@ -33,7 +33,8 @@ import {
     IKivaFile,
     IKivaFirstEntry,
     IKivaVictimInterview,
-    IKivaAction
+    IKivaAction,
+    IKivaFollowUp
 } from './kiva.file';
 
 export class KivaRouter {
@@ -103,6 +104,23 @@ export class KivaRouter {
                 next(new JSONError(err));
             });
     }
+    addFollowUp(req: Request, res: Response, next: NextFunction) {
+        return kivaService.addFollowup(req.params.id, req.body)
+            .then((result: IKivaFollowUp) => {
+                res.setHeader('Location', `${req.baseUrl}/${req.params.id}/followup/${result._id}`);
+                res.status(201).json(result);
+            }).catch(err => {
+                next(new JSONError(err));
+            });
+    }
+    updateFollowUp(req: Request, res: Response, next: NextFunction) {
+        return kivaService.updateFollowup(req.params.id, req.params.fid, req.body) 
+            .then((result: IKivaFollowUp) => {
+                res.status(200).json(result);
+            }).catch(err => {
+                next(new JSONError(err));
+            });
+    }
 
     init() {
         //SET AUTHORIZATION HERE PER ROUTER FIRST
@@ -116,6 +134,9 @@ export class KivaRouter {
 
         this.router.post('/:id/action', this.addAction);
         this.router.put('/:id/action/:aid', this.updateAction);
+
+        this.router.post('/:id/followup', this.addFollowUp);
+        this.router.put('/:id/followup/:fid', this.updateFollowUp);
     }
 }
 

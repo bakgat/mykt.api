@@ -55,6 +55,9 @@ export class KivaService extends GenericCrudService<kiva.IKivaFile> {
         let promise = new Promise<kiva.IKivaAction>((resolve, reject) => {
             kiva.KivaFile.findById(id)
                 .then(file => {
+                    if (!file) {
+                        reject(404);
+                    }
                     file.actions.push(data);
                     file.save()
                         .then((res: kiva.IKivaFile) => {
@@ -63,14 +66,30 @@ export class KivaService extends GenericCrudService<kiva.IKivaFile> {
                         })
                         .catch(err => reject(err));
                 }).catch(err => {
-                    reject(404);
+                    reject(err);
                 });
 
         });
         return promise;
     }
-    addFollowup(data: kiva.IKivaFollowUp): Promise<kiva.IKivaFollowUp> {
-        return null;
+    addFollowup(id: string, data: kiva.IKivaFollowUp): Promise<kiva.IKivaFollowUp> {
+        let promise = new Promise<kiva.IKivaFollowUp>((resolve, reject) => {
+            kiva.KivaFile.findById(id)
+                .then(file => {
+                    if (!file) {
+                        reject(404);
+                    }
+                    file.follow_ups.push(data);
+                    file.save()
+                        .then((res: kiva.IKivaFile) => {
+                            let followUp = res.follow_ups[res.follow_ups.length - 1];
+                            resolve(followUp);
+                        }).catch(err => reject(err));
+                }).catch(err => {
+                    reject(err);
+                });
+        });
+        return promise;
     }
     addEvaluation(data: kiva.IKivaFollowUp): Promise<kiva.IKivaFollowUp> {
         return null;
@@ -113,7 +132,19 @@ export class KivaService extends GenericCrudService<kiva.IKivaFile> {
         return promise;
     }
     updateFollowup(id: any, fid: any, data: kiva.IKivaFollowUp): Promise<kiva.IKivaFollowUp> {
-        return null;
+        let promise = new Promise<kiva.IKivaFollowUp>((resolve, reject) => {
+            kiva.KivaFile.findOneAndUpdate({ _id: id, 'follow_ups._id': fid },
+                { $set: { 'follow_ups.$': data } }, { new: true })
+                .then(res => {
+                    if(!res) {
+                        reject(404);
+                    }
+                    resolve(res.follow_ups.find(f => { return f._id = fid }));
+                }).catch(err => {
+                    reject(err);
+                });
+        });
+        return promise;
     }
     updateEvaluation(id: any, eid: any, data: kiva.IKivaFollowUp): Promise<kiva.IKivaFollowUp> {
         return null;

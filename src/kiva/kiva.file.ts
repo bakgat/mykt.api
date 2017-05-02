@@ -7,7 +7,7 @@ export interface IKivaStudent extends mongoose.Types.Subdocument {
     group: String
 }
 export interface IKivaFollowUp extends mongoose.Types.Subdocument {
-    _id: String,
+    _id: string,
     type: String, //enum (contact_teacher, contact_parents, feedback=)
     date: Date,
     conclusion: String
@@ -87,7 +87,6 @@ export const KivaStudentSchema = new mongoose.Schema({
     group: { type: String, required: true }
 });
 export const KivaFollowUpSchema = new mongoose.Schema({
-    _id: { type: String, required: true },
     date: { type: Date, required: false },
     type: { type: String, required: false },
     conclusion: { type: String, required: false }

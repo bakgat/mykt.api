@@ -30,20 +30,6 @@ let newFile = {
     bullies: [{ _id: "58d528003e17d80fc4c5f410", display_name: "Rebekka Buyse", group: "Lambik" }],
     announcer: { type: "parent", display_name: "Armand Van Iseghem" }
 };
-let newKivaAgreement = {
-    _id: "58d528003e17d80fc4c5f410",
-    display_name: "Rebekka Buyse",
-    group: "Lambik",
-    agreement: 'Ik zal het nooit meer doen'
-}
-let newAction = {
-    type: 'no-blame',
-    no_blame: {
-        date: new Date(),
-        students: [newKivaAgreement],
-        description: 'Heel warm gesprek'
-    }
-}
 let newVictimInterview = {
     victim: {
         _id: '58da34163e17d80fc4c5f416',
@@ -59,6 +45,25 @@ let newVictimInterview = {
     supporters: [{ _id: "58d528003e17d80fc4c5f410", display_name: "Rebekka Buyse", group: "Lambik" }],
     description: 'Nog een verslag over wat er gebeurde door het slachtoffer verteld.'
 };
+let newKivaAgreement = {
+    _id: "58d528003e17d80fc4c5f410",
+    display_name: "Rebekka Buyse",
+    group: "Lambik",
+    agreement: 'Ik zal het nooit meer doen'
+}
+let newAction = {
+    type: 'no-blame',
+    no_blame: {
+        date: new Date(),
+        students: [newKivaAgreement],
+        description: 'Heel warm gesprek'
+    }
+}
+let newFollowUp = {
+    type: 'contact_parents',
+    date: new Date(),
+    conclusion: 'Verhaal verteld aan mama.'
+}
 
 describe(`GET v1/kiva/${fileId}`, () => {
     it('responds with a single json object', () => {
@@ -306,6 +311,101 @@ describe(`PUT v1/kiva/${fileId}/action/:aid`, () => {
                     'recovery_contract'
                 ]);
                 expect(res.body.no_blame.description).to.equal(updatedAction.no_blame.description);
+            })
+    });
+    it('should return 404 when kivaFile is not found', () => {
+        return chai.request(app).post(`/v1/kiva/${faultyFileId}/action/${aid}`)
+            .send(newVictimInterview)
+            .catch(err => {
+                expect(err).to.have.status(404);
+            })
+    });
+});
+
+
+describe(`POST v1/kiva/:id/followup`, () => {
+    let id = '';
+    beforeEach(done => {
+        kiva.KivaFile.create({ first_entry: newFile })
+            .then(result => {
+                id = result._id;
+                done();
+            });
+    });
+    afterEach(done => {
+        kiva.KivaFile.find({ 'first_entry.summary': 'New added' }).remove()
+            .exec().then(() => { done(); });
+    });
+
+    it('should return an follow up when added', () => {
+        return chai.request(app).post(`/v1/kiva/${id}/followup`)
+            .set('content-type', 'application/x-www-form-urlencoded')
+            .send(newFollowUp)
+            .then(res => {
+                expect(res).to.have.status(201);
+                expect(res).to.have.header('location', `/v1/kiva/${id}/followup/${res.body._id}`);
+                expect(res.body).to.be.an('object');
+                expect(res.body).to.have.all.keys([
+                    '_id',
+                    'type',
+                    'date',
+                    'conclusion'
+                ]);
+                let followUp = res.body;
+                expect(new Date(followUp.date)).to.equalDate(newFollowUp.date);
+                expect(followUp.conclusion).to.equal(newFollowUp.conclusion);
+                expect(followUp.type).to.equal(newFollowUp.type);
+            });
+    });
+
+    it('should return 404 when kivaFile is not found', () => {
+        return chai.request(app).post(`/v1/kiva/${faultyFileId}/followup`)
+            .send(newFollowUp)
+            .catch(err => {
+                expect(err).to.have.status(404);
+            })
+    });
+});
+
+describe(`PUT v1/kiva/${fileId}/followup/:fid`, () => {
+    let id = '';
+    let fid = '';
+    beforeEach(done => {
+        kiva.KivaFile.create({ first_entry: newFile, victim_interview: newVictimInterview, follow_ups: [newFollowUp] })
+            .then(result => {
+                id = result._id;
+                fid = result.follow_ups[0]._id;
+                done();
+            });
+    });
+    afterEach(done => {
+        kiva.KivaFile.find({ 'first_entry.summary': 'New added' }).remove()
+            .exec().then(() => { done(); });
+    });
+
+    it('should update an existing followup', () => {
+        var updatedFollowUp = Object.assign({ _id: fid }, newFollowUp);
+        updatedFollowUp.conclusion = 'Aanpassing';
+
+        return chai.request(app).put(`/v1/kiva/${id}/followup/${fid}`)
+            .send(updatedFollowUp)
+            .then(res => {
+                expect(res).to.have.status(200);
+                expect(res.body).to.be.an('object');
+                expect(res.body).to.have.all.keys([
+                    '_id',
+                    'type',
+                    'date',
+                    'conclusion'
+                ]);
+                expect(res.body.conclusion).to.equal(updatedFollowUp.conclusion);
+            })
+    });
+    it('should return 404 when kivaFile is not found', () => {
+        return chai.request(app).post(`/v1/kiva/${faultyFileId}/followup/${fid}`)
+            .send(newFollowUp)
+            .catch(err => {
+                expect(err).to.have.status(404);
             })
     });
 });
