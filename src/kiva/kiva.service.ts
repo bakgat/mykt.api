@@ -91,12 +91,41 @@ export class KivaService extends GenericCrudService<kiva.IKivaFile> {
         });
         return promise;
     }
-    addEvaluation(data: kiva.IKivaFollowUp): Promise<kiva.IKivaFollowUp> {
-        return null;
+    addEvaluation(id: string, data: kiva.IKivaFollowUp): Promise<kiva.IKivaFollowUp> {
+        let promise = new Promise<kiva.IKivaFollowUp>((resolve, reject) => {
+            kiva.KivaFile.findById(id)
+                .then(file => {
+                    if (!file) {
+                        reject(404);
+                    }
+                    file.evaluations.push(data);
+                    file.save()
+                        .then((res: kiva.IKivaFile) => {
+                            let evaluation = res.evaluations[res.evaluations.length - 1];
+                            resolve(evaluation);
+                        }).catch(err => reject(err));
+                }).catch(err => reject(err));
+        });
+        return promise;
     }
 
-    lock(id: any, shouldLock: Boolean): Promise<Boolean> {
-        return null;
+    lock(id: any, lock: any): Promise<Boolean> {
+        let promise = new Promise<Boolean>((resolve, reject) => {
+            if (lock) {
+                kiva.KivaFile.findOneAndUpdate({ _id: id },
+                    { $set: { locked: lock } })
+                    .then(() => {
+                        resolve(true);
+                    }).catch(err => reject(err));
+            } else {
+                kiva.KivaFile.findOneAndUpdate({ _id: id },
+                    { $unset: { locked: 1 } }, {new: true})
+                    .then(res => {
+                        resolve(false);
+                    }).catch(err => reject(err));
+            }
+        });
+        return promise;
     }
 
     updateFile(id: any, data: kiva.IKivaFirstEntry): Promise<kiva.IKivaFile> {
@@ -136,7 +165,7 @@ export class KivaService extends GenericCrudService<kiva.IKivaFile> {
             kiva.KivaFile.findOneAndUpdate({ _id: id, 'follow_ups._id': fid },
                 { $set: { 'follow_ups.$': data } }, { new: true })
                 .then(res => {
-                    if(!res) {
+                    if (!res) {
                         reject(404);
                     }
                     resolve(res.follow_ups.find(f => { return f._id = fid }));
@@ -147,7 +176,19 @@ export class KivaService extends GenericCrudService<kiva.IKivaFile> {
         return promise;
     }
     updateEvaluation(id: any, eid: any, data: kiva.IKivaFollowUp): Promise<kiva.IKivaFollowUp> {
-        return null;
+        let promise = new Promise<kiva.IKivaFollowUp>((resolve, reject) => {
+            kiva.KivaFile.findOneAndUpdate({ _id: id, 'evaluations._id': eid },
+                { $set: { 'evaluations.$': data } }, { new: true })
+                .then(res => {
+                    if (!res) {
+                        reject(404);
+                    }
+                    resolve(res.evaluations.find(e => { return e._id = eid }));
+                }).catch(err => {
+                    reject(err);
+                });
+        });
+        return promise;
     }
 
     removeFile(id: any): Promise<kiva.IKivaFirstEntry> {
