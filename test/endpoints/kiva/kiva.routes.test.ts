@@ -326,7 +326,6 @@ describe(`PUT v1/kiva/${fileId}/actions/:aid`, () => {
     });
 });
 
-
 describe(`POST v1/kiva/:id/followups`, () => {
     let id = '';
     beforeEach(done => {
@@ -413,7 +412,6 @@ describe(`PUT v1/kiva/${fileId}/followups/:fid`, () => {
             })
     });
 });
-
 
 describe(`POST v1/kiva/:id/evaluations`, () => {
     let id = '';

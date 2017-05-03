@@ -43,6 +43,47 @@ export const collections = {
             },
             "evaluations": [], "follow_ups": [], "actions": [],
         }
+    ],
+    books: [
+        {
+            "_id": ObjectId("5909a1dd25ef9776e187759f"),
+            "title": "Is zoenen ook seks ? / druk 1",
+            "isbn": "9789059540125",
+            "summary": "Antwoorden op vragen over allerlei zaken die met de verschillen tussen jongens en meisjes, verliefdheid en seks te maken hebben. Met kleurenfoto's en gekleurde tekeningen. Vanaf ca. 10 jaar.",
+            "authors": ["Dirk Musschoot"],
+            "publishers": ["NBD Biblion Publishers"],
+            "publishedDate": "2003",
+            "pageCount": 45,
+            "language": "nl",
+            "imageLinks": {
+                "smallThumbnail": "http://books.google.com/books/content?id=sDyQ48ZtJUkC&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+                "thumbnail": "http://books.google.com/books/content?id=sDyQ48ZtJUkC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+            },
+            "age": {
+                "min": 10
+            },
+            tags: ["seksualiteit"],
+            groups: ["seks", "geboorte"]
+        }, {
+            "_id": ObjectId("5909a40025ef9776e18775a0"),
+            "title": "De Paraplu / druk 1",
+            "isbn": "9789047702757",
+            "summary": "Als een klein hondje op een regenachtige dag een paraplu vindt, steekt er een windvlaag op. De paraplu en het hondje worden meegevoerd tot ver boven de wolken. Het begin van een wonderbaarlijke reis om de wereld vol avonturen. De Schuberts overtreffen zichzelf met dit avontuurlijke, kleurrijke prentenboek vol onver wachte details. De paraplu is een verrassend, nieuw, tekstloos prentenboek - en een reis om keer op keer te maken.",
+            "authors": ["Ingrid Schubert", "Dieter Schubert"],
+            "publishers": ["Lemniscaat"],
+            "publishedDate": "2014",
+            "pageCount": 36,
+            "language": "nl",
+            "imageLinks": {
+                "smallThumbnail": "http://books.google.com/books/content?id=sDyQ48ZtJUkC&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+                "thumbnail": "http://books.google.com/books/content?id=sDyQ48ZtJUkC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+            },
+            "age": {
+                "min": 3
+            },
+            tags: ["wereldreizen", "fantaseren"],
+            groups: ["prentenboek", "leeswelp"]
+        }
     ]
 }
 
@@ -63,14 +104,14 @@ export function run() {
                     collection.drop(err => {
                         if (err && err.message != 'ns not found') cb(err);
                         mongoose.connection.collection(name).insert(collections[name], () => {
-                                if (++i === names.length) {
-                                    mongoose.connection.close();
-                                    console.log('Done and closed connection');
-                                    cb();
-                                }
-                            });
+                            if (++i === names.length) {
+                                mongoose.connection.close();
+                                console.log('Done and closed connection');
+                                cb();
+                            }
+                        });
                     });
-                    
+
                 } else {
                     mongoose.connection.collection(name).insert(collections[name], () => {
                         if (++i === names.length) {
