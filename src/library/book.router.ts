@@ -63,3 +63,5 @@ export class BookRouter extends CrudRouter<IBook> {
         super.init();
     }
 }
+
+export const bookRoutes = new BookRouter();
