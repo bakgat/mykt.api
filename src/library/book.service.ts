@@ -6,17 +6,17 @@ export class BookService extends GenericCrudService<IBook> {
         super();
         this._model = Book;
     }
-    getTags() {
+    getTags(): Promise<Array<String>> {
         return Book.distinct('tags').exec();
     }
-    addTag(id: String, tag: String) {
+    addTag(id: String, tag: String): Promise<Array<String>> {
         return Book.findByIdAndUpdate(id, { $addToSet: { tags: tag } }, { new: true })
             .exec()
             .then(result => {
                 return result.tags;
             });
     }
-    removeTag(id: String, tag: String) {
+    removeTag(id: String, tag: String): Promise<Array<String>> {
         return Book.findByIdAndUpdate(id, { $pull: { tags: tag } }, { new: true })
             .exec()
             .then(result => {
@@ -24,14 +24,14 @@ export class BookService extends GenericCrudService<IBook> {
             });
     }
 
-    addGroup(id: String, group: String) {
+    addGroup(id: String, group: String): Promise<Array<String>> {
         return Book.findByIdAndUpdate(id, { $addToSet: { groups: group } }, { new: true })
             .exec()
             .then(result => {
                 return result.groups
             })
     }
-    removeGroup(id: String, group: String) {
+    removeGroup(id: String, group: String): Promise<Array<String>> {
         return Book.findByIdAndUpdate(id, { $pull: { groups: group } }, { new: true })
             .exec()
             .then(result => {
@@ -39,7 +39,7 @@ export class BookService extends GenericCrudService<IBook> {
             });
     }
 
-    updateNotes(id: String, notes: String) {
+    updateNotes(id: String, notes: String): Promise<String> {
         return Book.findByIdAndUpdate(id, { notes: notes }, { new: true })
             .exec()
             .then(result => {
@@ -47,7 +47,7 @@ export class BookService extends GenericCrudService<IBook> {
             });
     }
 
-    updateAge(id: String, min: Number, max: Number) {
+    updateAge(id: String, min: Number, max: Number): Promise<any> {
         return Book.findByIdAndUpdate(id, { 'age.min': min, 'age.max': max }, { new: true })
             .exec()
             .then(result => {

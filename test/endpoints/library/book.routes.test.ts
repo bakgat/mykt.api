@@ -158,7 +158,7 @@ describe(`PUT v1/library/books/${bookId}`, () => {
 describe('DELETE v1/library/books/:id', () => {
     var book;
     beforeEach(done => {
-        
+
         book = new Book(newBook);
         book.save()
             .then(() => {
@@ -181,4 +181,17 @@ describe('DELETE v1/library/books/foo', () => {
                 expect(res).to.have.status(404);
             });
     });
+});
+
+describe('GET v1/library/books/tags', () => {
+    it('responds with JSON array', () => {
+        return chai.request(app).get('/v1/library/books/tags')
+            .then(res => {
+                console.log(res.body);
+                expect(res).to.have.status(200);
+                expect(res).to.be.json;
+                expect(res.body).to.be.an('array');
+                expect(res.body).to.be.length(3);
+            });
+    }); 
 });

@@ -24,7 +24,12 @@ export class BookRouter extends CrudRouter<IBook> {
     }
 
     public getTags(req: Request, res: Response, next: NextFunction) {
-        
+        return bookService.getTags()
+            .then((result: Array<String>) => {
+                res.status(200).json(result);
+            }).catch(err => {
+                next(new JSONError(err));
+            })
     }
     public addTag(req: Request, res: Response, next: NextFunction) {
     }

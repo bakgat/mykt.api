@@ -62,7 +62,7 @@ export const collections = {
             "age": {
                 "min": 10
             },
-            tags: ["seksualiteit"],
+            tags: ["seksualiteit", "fantaseren"],
             groups: ["seks", "geboorte"]
         }, {
             "_id": ObjectId("5909a40025ef9776e18775a0"),
