@@ -63,7 +63,7 @@ export const collections = {
                 "min": 10
             },
             tags: ["seksualiteit", "fantaseren"],
-            groups: ["seks", "geboorte"]
+            groups: ["seks", "geboorte", "prentenboek"]
         }, {
             "_id": ObjectId("5909a40025ef9776e18775a0"),
             "title": "De Paraplu / druk 1",

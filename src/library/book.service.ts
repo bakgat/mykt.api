@@ -24,6 +24,9 @@ export class BookService extends GenericCrudService<IBook> {
             });
     }
 
+    getGroups(): Promise<Array<String>> {
+        return Book.distinct('groups').exec();
+    }
     addGroup(id: String, group: String): Promise<Array<String>> {
         return Book.findByIdAndUpdate(id, { $addToSet: { groups: group } }, { new: true })
             .exec()

@@ -187,11 +187,126 @@ describe('GET v1/library/books/tags', () => {
     it('responds with JSON array', () => {
         return chai.request(app).get('/v1/library/books/tags')
             .then(res => {
-                console.log(res.body);
                 expect(res).to.have.status(200);
                 expect(res).to.be.json;
                 expect(res.body).to.be.an('array');
                 expect(res.body).to.be.length(3);
             });
-    }); 
+    });
+});
+
+describe(`POST v1/library/books/tags`, () => {
+    it('should add new tag and responds with full tag array', () => {
+        return chai.request(app).post(`/v1/library/books/${bookId}/tags`)
+            .send({ tag: 'Nieuwe tag' })
+            .then(res => {
+                expect(res).to.have.status(200);
+                expect(res).to.be.json;
+                expect(res.body).to.be.an('array');
+                expect(res.body).to.be.length(3);
+                let newTag = res.body.find(t => { return t == 'Nieuwe tag' });
+                expect(newTag).to.exist;
+            });
+    });
+});
+
+describe(`DELETE v1/library/books/${bookId}/tags`, () => {
+    beforeEach(done => {
+        Book.findByIdAndUpdate(bookId, { $push: { tags: 'Nieuwe tag' } }).exec()
+            .then(() => { done(); });
+    });
+    it('should remove existing tag and response with full tag array', () => {
+        return chai.request(app).del(`/v1/library/books/${bookId}/tags`)
+            .send({ tag: 'Nieuwe tag' })
+            .then(res => {
+                expect(res).to.have.status(200);
+                expect(res).to.be.json;
+                expect(res.body).to.be.an('array');
+                expect(res.body).to.be.length(2);
+            });
+    });
+});
+
+describe('GET v1/library/books/groups', () => {
+    it('responds with JSON array', () => {
+        return chai.request(app).get('/v1/library/books/groups')
+            .then(res => {
+                expect(res).to.have.status(200);
+                expect(res).to.be.json;
+                expect(res.body).to.be.an('array');
+                expect(res.body).to.be.length(4);
+            });
+    });
+});
+
+describe(`POST v1/library/books/groups`, () => {
+    it('should add new group and responds with full group array', () => {
+        return chai.request(app).post(`/v1/library/books/${bookId}/groups`)
+            .send({ group: 'Nieuwe groep' })
+            .then(res => {
+                expect(res).to.have.status(200);
+                expect(res).to.be.json;
+                expect(res.body).to.be.an('array');
+                expect(res.body).to.be.length(4);
+                let newTag = res.body.find(t => { return t == 'Nieuwe groep' });
+                expect(newTag).to.exist;
+            });
+    });
+});
+
+describe(`DELETE v1/library/books/${bookId}/groups`, () => {
+    beforeEach(done => {
+        Book.findByIdAndUpdate(bookId, { $push: { groups: 'Nieuwe groep' } }).exec()
+            .then(() => { done(); });
+    });
+    it('should remove existing group and response with full group array', () => {
+        return chai.request(app).del(`/v1/library/books/${bookId}/groups`)
+            .send({ group: 'Nieuwe groep' })
+            .then(res => {
+                expect(res).to.have.status(200);
+                expect(res).to.be.json;
+                expect(res.body).to.be.an('array');
+                expect(res.body).to.be.length(3);
+            });
+    });
+});
+
+describe(`PATCH v1/library/books/${bookId}`, () => {
+    var original;
+    beforeEach(done => {
+        Book.findById(bookId)
+            .then(book => {
+                original = book;
+                done();
+            });
+    });
+    afterEach(done => {
+        Book.findByIdAndUpdate(bookId, { $set: original })
+            .then(() => {
+                done();
+            });
+    });
+
+    it('patch age min and max, age object should be returned', () => {
+        return chai.request(app).patch(`/v1/library/books/${bookId}`)
+            .send({ op: 'age', min: 5, max: 15  })
+            .then(res => {
+                expect(res).to.have.status(200);
+                expect(res).to.be.json;
+                expect(res.body).to.be.an('object');
+                expect(res.body.age.min).to.equal(5);
+                expect(res.body.age.max).to.equal(15);
+            });
+    });
+
+    it('patch notes, notes object should be returned', () => {
+        return chai.request(app).patch(`/v1/library/books/${bookId}`)
+            .send({ op: 'notes', notes: 'nieuwe notitie'})
+            .then(res => {
+                expect(res).to.have.status(200);
+                expect(res).to.be.json;
+                expect(res.body).to.be.an('object');
+                expect(res.body.notes).to.equal('nieuwe notitie');
+            });
+    });
 });

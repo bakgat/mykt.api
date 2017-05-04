@@ -29,27 +29,67 @@ export class BookRouter extends CrudRouter<IBook> {
                 res.status(200).json(result);
             }).catch(err => {
                 next(new JSONError(err));
-            })
+            });
     }
     public addTag(req: Request, res: Response, next: NextFunction) {
+        return bookService.addTag(req.params.id, req.body.tag)
+            .then((result: Array<String>) => {
+                res.status(200).json(result);
+            }).catch(err => {
+                next(new JSONError(err));
+            });
     }
     public removeTag(req: Request, res: Response, next: NextFunction) {
+        return bookService.removeTag(req.params.id, req.body.tag)
+            .then((result: Array<String>) => {
+                res.status(200).json(result);
+            }).catch(err => {
+                next(new JSONError(err));
+            });
     }
 
     public getGroups(req: Request, res: Response, next: NextFunction) {
+        return bookService.getGroups()
+            .then((result: Array<String>) => {
+                res.status(200).json(result);
+            }).catch(err => {
+                next(new JSONError(err));
+            });
     }
     public addGroup(req: Request, res: Response, next: NextFunction) {
+        return bookService.addGroup(req.params.id, req.body.group)
+            .then((result: Array<String>) => {
+                res.status(200).json(result);
+            }).catch(err => {
+                next(new JSONError(err));
+            });
     }
     public removeGroup(req: Request, res: Response, next: NextFunction) {
+        return bookService.removeGroup(req.params.id, req.body.group)
+            .then((result: Array<String>) => {
+                res.status(200).json(result);
+            }).catch(err => {
+                next(new JSONError(err));
+            });
     }
 
     public patchBook(req: Request, res: Response, next: NextFunction) {
         let op = req.body.op;
         switch (op) {
             case 'notes':
-                break;
+                return bookService.updateNotes(req.params.id, req.body.notes)
+                    .then((result: String) => {
+                        res.status(200).json({notes: result});
+                    }).catch(err => {
+                        next(new JSONError(err));
+                    });
             case 'age':
-                break;
+                return bookService.updateAge(req.params.id, req.body.min, req.body.max)
+                    .then((result: any) => {
+                        res.status(200).json({age: result});
+                    }).catch(err => {
+                        next(new JSONError(err));
+                    });
         }
 
     }
@@ -57,11 +97,11 @@ export class BookRouter extends CrudRouter<IBook> {
     init() {
         this.router.get('/tags', this.getTags);
         this.router.post('/:id/tags', this.addTag);
-        this.router.delete('/:id/tags/:tag', this.removeTag);
+        this.router.delete('/:id/tags', this.removeTag);
 
         this.router.get('/groups', this.getGroups);
         this.router.post('/:id/groups', this.addGroup);
-        this.router.delete('/:id/groups/:group', this.removeGroup);
+        this.router.delete('/:id/groups', this.removeGroup);
 
         this.router.patch('/:id', this.patchBook);
 
