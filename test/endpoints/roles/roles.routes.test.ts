@@ -33,6 +33,7 @@ describe('GET v1/roles', () => {
             });
     });
 });
+
 describe(`v1/roles/${roleId}`, () => {
     it('responds with a single json object', () => {
         return chai.request(app).get(`/v1/roles/${roleId}`)
