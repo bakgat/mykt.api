@@ -118,7 +118,7 @@ describe(`PUT v1/roles/${roleId}`, () => {
     });
 });
 
-describe('DELETE v1/students/:id', () => {
+describe('DELETE v1/roles/:id', () => {
     var role;
     beforeEach(done => {
         let data = {
