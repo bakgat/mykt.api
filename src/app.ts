@@ -6,6 +6,8 @@ import * as mongoose from 'mongoose';
 import * as bluebird from 'bluebird';
 import * as session from 'express-session';
 import * as passport from 'passport';
+import * as cors from 'cors';
+
 
 import { authRoutes, guard } from './auth/index';
 import { studentRoutes } from './students/student.router';
@@ -28,6 +30,8 @@ class App {
     }
 
     private middleware(): void {
+        //enable cors //@todo: configure cors to narrow origins down
+        this.express.use(cors());
         //logging
         this.express.use(logger('dev'));
         //bodyParser
