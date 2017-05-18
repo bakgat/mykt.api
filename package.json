@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "gulp && node dist/index.js",
+    "serve": "gulp dev-server",
     "test": "ts-node test/seed/db.seed.ts && nyc mocha",
     "cover": "nyc report --reporter=text-lcov | coveralls"
   },

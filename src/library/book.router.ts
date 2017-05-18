@@ -91,7 +91,16 @@ export class BookRouter extends CrudRouter<IBook> {
                         next(new JSONError(err));
                     });
         }
+    }
 
+    public getAuthors(req: Request, res: Response, next: NextFunction) {
+        return bookService.getAuthors()
+            .then((result: Array<String>) => {
+                res.status(200).json(result);
+            }).catch(err => {
+                
+                next(new JSONError(err));
+            });
     }
 
     init() {
@@ -103,7 +112,10 @@ export class BookRouter extends CrudRouter<IBook> {
         this.router.post('/:id/groups', this.addGroup);
         this.router.delete('/:id/groups', this.removeGroup);
 
+        this.router.get('/authors', this.getAuthors);
+
         this.router.patch('/:id', this.patchBook);
+
 
         super.init();
     }

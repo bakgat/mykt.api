@@ -58,6 +58,10 @@ export class BookService extends GenericCrudService<IBook> {
             });
     }
 
+    getAuthors(): Promise<Array<String>> {
+        return Book.distinct('authors').exec();
+    }
+
 }
 
 export const bookService = new BookService();

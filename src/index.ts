@@ -9,8 +9,8 @@ debug('ts-express:server');
 const port = normalizePort(process.env.PORT || 3000);
 App.set('port', port);
 
-let pe = new pretty();
-pe.start();
+//let pe = new pretty();
+//pe.start();
 
 const server = http.createServer(App);
 server.listen(port);

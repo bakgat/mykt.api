@@ -310,3 +310,15 @@ describe(`PATCH v1/library/books/${bookId}`, () => {
             });
     });
 });
+
+describe('GET v1/library/books/authors', () => {
+    it('responds with JSON array', () => {
+        return chai.request(app).get('/v1/library/books/authors')
+            .then(res => {
+                expect(res).to.have.status(200);
+                expect(res).to.be.json;
+                expect(res.body).to.be.an('array');
+                expect(res.body).to.be.length(3);
+            });
+    });
+});
